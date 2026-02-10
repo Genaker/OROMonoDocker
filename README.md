@@ -28,11 +28,11 @@ A comprehensive, all-in-one Docker container for [ORO Commerce CRM](https://oroi
 ## 🚀 Features
 
 - **All-in-One Container**: Single Docker container with all ORO Commerce dependencies
-- **Production-Ready**: Pre-configured with optimized PHP and Nginx settings
+- **Development-Optimized**: Pre-configured with optimized PHP and Nginx settings for development
 - **Latest Stack**: PHP 8.3, PostgreSQL 13, Node.js 20, Redis
 - **Demo Data**: Includes demo fixtures for quick testing and evaluation
 - **Easy Setup**: Minimal configuration required to get started
-- **Mono-Container Design**: Simplified deployment and management
+- **Mono-Container Design**: Simplified deployment and management for development/testing
 
 ## 📦 What's Included
 
@@ -374,7 +374,8 @@ docker exec -it oro-commerce bash -c "cd /var/www/html/oro && php bin/console ca
 To process background jobs:
 
 ```bash
-# Memory limit in bytes (500MB = 524288000 bytes, or use 500000000 for ~476MB)
+# Memory limit: 500 MiB (mebibytes) = 524288000 bytes
+# Alternative: 500 MB (megabytes) = 500000000 bytes
 docker exec -it oro-commerce bash -c "cd /var/www/html/oro && php bin/console oro:message-queue:consume --memory-limit=524288000"
 ```
 
