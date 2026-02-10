@@ -374,8 +374,8 @@ docker exec -it oro-commerce bash -c "cd /var/www/html/oro && php bin/console ca
 To process background jobs:
 
 ```bash
-# Memory limit in bytes (500MB = 500000000 bytes)
-docker exec -it oro-commerce bash -c "cd /var/www/html/oro && php bin/console oro:message-queue:consume --memory-limit=500000000"
+# Memory limit in bytes (500MB = 524288000 bytes, or use 500000000 for ~476MB)
+docker exec -it oro-commerce bash -c "cd /var/www/html/oro && php bin/console oro:message-queue:consume --memory-limit=524288000"
 ```
 
 ## ⚡ Performance Tuning
