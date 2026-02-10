@@ -6,6 +6,8 @@
 
 A comprehensive, all-in-one Docker container for [ORO Commerce CRM](https://oroinc.com/orocommerce/) with all required services pre-configured and ready to use. This mono-container approach simplifies deployment and development by packaging Nginx, PHP 8.3, PostgreSQL, Redis, and the ORO Commerce application in a single container.
 
+> **⚠️ IMPORTANT**: This is a **development/demo container** with all services in a single container. **DO NOT use in production** without proper security hardening. For production deployments, use a multi-container architecture with separate containers for each service, proper secret management, and orchestration (Kubernetes, Docker Swarm, etc.).
+
 ## 📋 Table of Contents
 
 - [Features](#-features)
@@ -255,7 +257,11 @@ The default admin credentials (after demo data installation):
 - **Username**: `admin`
 - **Password**: `admin`
 
-**⚠️ Important**: Change these credentials immediately in production environments!
+**🔒 SECURITY WARNING**: These are **demo credentials only**! 
+- Change these credentials **immediately** on first login
+- Never use these default credentials in any environment accessible from the internet
+- This applies to development, staging, and production environments
+- Consider implementing strong password policies and multi-factor authentication
 
 ## 🔧 Services Management
 
@@ -346,10 +352,15 @@ docker exec -it oro-commerce service postgresql restart
 ### Permission Issues
 
 ```bash
-# Fix permissions on ORO directory
-docker exec -it oro-commerce chmod -R 777 /var/www/html/oro/var/cache
-docker exec -it oro-commerce chmod -R 777 /var/www/html/oro/var/logs
-docker exec -it oro-commerce chmod -R 777 /var/www/html/oro/public/media
+# Fix permissions on ORO directory (development only)
+# Note: 775 for directories, 664 for files is more secure than 777
+docker exec -it oro-commerce chmod -R 775 /var/www/html/oro/var/cache
+docker exec -it oro-commerce chmod -R 775 /var/www/html/oro/var/logs
+docker exec -it oro-commerce chmod -R 775 /var/www/html/oro/public/media
+
+# Better approach: set proper ownership (if www-data user exists)
+docker exec -it oro-commerce chown -R www-data:www-data /var/www/html/oro/var
+docker exec -it oro-commerce chown -R www-data:www-data /var/www/html/oro/public/media
 ```
 
 ### Clear ORO Cache
@@ -363,7 +374,8 @@ docker exec -it oro-commerce bash -c "cd /var/www/html/oro && php bin/console ca
 To process background jobs:
 
 ```bash
-docker exec -it oro-commerce bash -c "cd /var/www/html/oro && php bin/console oro:message-queue:consume --memory-limit=500000"
+# Memory limit in bytes (500MB = 500000000 bytes)
+docker exec -it oro-commerce bash -c "cd /var/www/html/oro && php bin/console oro:message-queue:consume --memory-limit=500000000"
 ```
 
 ## ⚡ Performance Tuning
