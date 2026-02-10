@@ -358,7 +358,7 @@ docker exec -it oro-commerce chmod -R 775 /var/www/html/oro/var/cache
 docker exec -it oro-commerce chmod -R 775 /var/www/html/oro/var/logs
 docker exec -it oro-commerce chmod -R 775 /var/www/html/oro/public/media
 
-# Better approach: set proper ownership (if www-data user exists)
+# Better approach: set proper ownership to the web server user
 docker exec -it oro-commerce chown -R www-data:www-data /var/www/html/oro/var
 docker exec -it oro-commerce chown -R www-data:www-data /var/www/html/oro/public/media
 ```
@@ -374,8 +374,9 @@ docker exec -it oro-commerce bash -c "cd /var/www/html/oro && php bin/console ca
 To process background jobs:
 
 ```bash
-# Memory limit: 500 MiB (mebibytes) = 524288000 bytes
-# Alternative: 500 MB (megabytes) = 500000000 bytes
+# Memory limit options:
+# - 500 MiB (mebibytes): 524288000 bytes (binary: 500 × 1024²)
+# - 500 MB (megabytes): 500000000 bytes (decimal: 500 × 1000²)
 docker exec -it oro-commerce bash -c "cd /var/www/html/oro && php bin/console oro:message-queue:consume --memory-limit=524288000"
 ```
 
