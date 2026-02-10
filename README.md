@@ -353,7 +353,7 @@ docker exec -it oro-commerce service postgresql restart
 
 ```bash
 # Fix permissions on ORO directory (development only)
-# Note: 775 for directories, 664 for files is more secure than 777
+# Using 775 for directories allows read/write/execute for owner and group
 docker exec -it oro-commerce chmod -R 775 /var/www/html/oro/var/cache
 docker exec -it oro-commerce chmod -R 775 /var/www/html/oro/var/logs
 docker exec -it oro-commerce chmod -R 775 /var/www/html/oro/public/media
@@ -361,6 +361,10 @@ docker exec -it oro-commerce chmod -R 775 /var/www/html/oro/public/media
 # Better approach: set proper ownership to the web server user
 docker exec -it oro-commerce chown -R www-data:www-data /var/www/html/oro/var
 docker exec -it oro-commerce chown -R www-data:www-data /var/www/html/oro/public/media
+
+# For more restrictive file permissions (files: 664, directories: 775)
+docker exec -it oro-commerce bash -c "find /var/www/html/oro/var -type d -exec chmod 775 {} \;"
+docker exec -it oro-commerce bash -c "find /var/www/html/oro/var -type f -exec chmod 664 {} \;"
 ```
 
 ### Clear ORO Cache
@@ -374,9 +378,9 @@ docker exec -it oro-commerce bash -c "cd /var/www/html/oro && php bin/console ca
 To process background jobs:
 
 ```bash
-# Memory limit options:
-# - 500 MiB (mebibytes): 524288000 bytes (binary: 500 × 1024²)
-# - 500 MB (megabytes): 500000000 bytes (decimal: 500 × 1000²)
+# Memory limit options (bytes):
+# - 500 MiB = 500 × 1024 × 1024 = 524,288,000 bytes (binary units)
+# - 500 MB  = 500 × 1000 × 1000 = 500,000,000 bytes (decimal units)
 docker exec -it oro-commerce bash -c "cd /var/www/html/oro && php bin/console oro:message-queue:consume --memory-limit=524288000"
 ```
 
